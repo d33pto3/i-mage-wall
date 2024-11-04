@@ -2,12 +2,12 @@ import { forwardRef, ReactNode, RefObject, useEffect } from "react";
 import { IModal } from "../types";
 
 interface IModalOrigin extends IModal {
-  headerContent?: ReactNode;
+  // headerContent?: ReactNode;
   mainContent: ReactNode;
 }
 
 const Modal = forwardRef<HTMLDivElement, IModalOrigin>((props, ref) => {
-  const { isVisible, closeModal, mainContent, headerContent } = props;
+  const { isVisible, closeModal, mainContent } = props;
   const modalRef = ref as RefObject<HTMLDivElement | null>;
 
   useEffect(() => {
@@ -30,16 +30,7 @@ const Modal = forwardRef<HTMLDivElement, IModalOrigin>((props, ref) => {
     };
   }, [isVisible, closeModal, modalRef]);
 
-  return (
-    <>
-      {isVisible && (
-        <>
-          {headerContent && headerContent}
-          {mainContent && mainContent}
-        </>
-      )}
-    </>
-  );
+  return <>{isVisible && <div>{mainContent}</div>}</>;
 });
 
 export default Modal;

@@ -1,23 +1,16 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import FileUploadModal from "./FileUploadModal";
 import { IPicture } from "../types";
+import ImageFrame from "./ImageFrame";
 
-export default function Gallery({ pictureList }: { pictureList: IPicture[] }) {
+const Gallery: React.FC<{ pictureList: IPicture[] }> = ({ pictureList }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
+  console.log(pictureList);
 
   return (
-    <div className="grid grid-cols-5 gap-8 mt-4 mx-8">
+    <div className="grid grid-cols-5 gap-[4px]">
       {pictureList.map((pic: IPicture) => (
-        <div
-          className="border-emerald-800 border-[8px] shadow-black shadow-xl transition ease-in-out hover:scale-110"
-          key={pic.id}
-        >
-          <img
-            className="object-cover h-48 w-96"
-            src={pic.url}
-            alt={pic.title}
-          />
-        </div>
+        <ImageFrame picture={pic} key={pic.id} />
       ))}
       <div className="border-black border-[2px] flex justify-center items-center">
         <p
@@ -35,4 +28,6 @@ export default function Gallery({ pictureList }: { pictureList: IPicture[] }) {
       />
     </div>
   );
-}
+};
+
+export default Gallery;

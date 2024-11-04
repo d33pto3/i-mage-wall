@@ -86,7 +86,6 @@ const FileUploadModal: React.FC<IModal> = ({ isVisible, closeModal }) => {
         ref={modalRef}
         isVisible={isVisible}
         closeModal={closeModal}
-        headerContent={<div>Upload Files</div>}
         mainContent={
           <div className="fixed inset-0 z-[999] backdrop-blur-sm grid h-screen place-items-center bg-black bg-opacity-60">
             <div
