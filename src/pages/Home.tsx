@@ -1,11 +1,11 @@
 import Gallery from "../components/Gallery";
-import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/config";
+import { IPicture } from "../types";
 
 function Home() {
-  const [pictureList, setPictureList] = useState<any>([]);
+  const [pictureList, setPictureList] = useState<IPicture[]>([]);
 
   const picturesCollectionRef = collection(db, "pictures");
 
