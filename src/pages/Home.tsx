@@ -27,7 +27,6 @@ function Home() {
 
   return (
     <>
-      <Navbar />
       <Gallery pictureList={pictureList} />
     </>
   );

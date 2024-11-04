@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import Navbar from "../components/Navbar";
 
 function Profile() {
   const { id } = useParams();
@@ -7,7 +6,6 @@ function Profile() {
 
   return (
     <>
-      <Navbar />
       <div>Profile</div>
     </>
   );
