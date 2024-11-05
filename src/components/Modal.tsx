@@ -1,36 +1,55 @@
-import { forwardRef, ReactNode, RefObject, useEffect } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { IModal } from "../types";
 
-interface IModalOrigin extends IModal {
-  // headerContent?: ReactNode;
+interface IModalProps extends IModal {
+  headerContent?: ReactNode;
   mainContent: ReactNode;
 }
 
-const Modal = forwardRef<HTMLDivElement, IModalOrigin>((props, ref) => {
-  const { isVisible, closeModal, mainContent } = props;
-  const modalRef = ref as RefObject<HTMLDivElement | null>;
+const Modal = ({
+  isVisible,
+  closeModal,
+  headerContent,
+  mainContent,
+}: IModalProps) => {
+  const modalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // only called inside *this* useEffect. so, moved the function inside it.
-    const handleClickOutside = (event: MouseEvent) => {
-      // concise and pragmatic way (the target will NODE)
-      if (
-        modalRef?.current &&
-        !modalRef.current?.contains(event?.target as Node)
-      ) {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
         closeModal();
       }
     };
 
     if (isVisible) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
     }
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isVisible, closeModal, modalRef]);
+  }, [isVisible, closeModal]);
 
-  return <>{isVisible && <div>{mainContent}</div>}</>;
-});
+  const handleClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      closeModal();
+    }
+  };
+
+  if (!isVisible) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[999] flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-[3px]"
+      onClick={handleClickOutside}
+    >
+      <div ref={modalRef} className="bg-white rounded-md w-[90%] max-w-md p-4">
+        {headerContent && (
+          <div className="border-b pb-2 mb-4">{headerContent}</div>
+        )}
+        <div>{mainContent}</div>
+      </div>
+    </div>
+  );
+};
 
 export default Modal;

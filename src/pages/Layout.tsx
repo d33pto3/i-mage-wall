@@ -7,10 +7,10 @@ const Layout: React.FC = () => {
       <header>
         <Navbar />
       </header>
-      <main>
+      <main className="bg-slate-100 h-[100%] py-24">
         <Outlet />
       </main>
-      <footer className="fixed bottom-0">footer</footer>
+      <footer className="bg-white w-full">footer</footer>
     </div>
   );
 };

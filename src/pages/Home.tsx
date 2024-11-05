@@ -26,7 +26,7 @@ function Home() {
   }, []);
 
   return (
-    <div className="mt-4 mx-[10%]">
+    <div className="mx-[10%]">
       <Gallery pictureList={pictureList} />
     </div>
   );

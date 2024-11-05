@@ -77,7 +77,7 @@ const SignIn: React.FC = () => {
           <h3></h3>
           <button>
             <img
-              src={user.photoURL || ""}
+              src={user?.photoURL || "/src/assets/user.png"}
               alt="User Profile"
               style={{ width: "50px", borderRadius: "50%" }}
               onClick={() => {
