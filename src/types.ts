@@ -22,4 +22,5 @@ export interface IPicture {
   uploadedAt: string;
   url: string;
   userId: string;
+  isPublic: boolean;
 }

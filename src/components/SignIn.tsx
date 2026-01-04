@@ -3,116 +3,123 @@ import { signInWithGoogle, signOutUser } from "../utils/auth";
 import { useAuth } from "../context/useAuth";
 import { SignInResult } from "../types";
 import { Link } from "react-router-dom";
-// import { useAuth } from "../context/AuthContext";
-// import { User as FirebaseUser } from "firebase/auth";
+import { User, LogOut, Layout, Settings, LogIn } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-// SignIn component definition
 const SignIn: React.FC = () => {
   const { user, loading } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
-
   const dropDownRef = useRef<HTMLDivElement | null>(null);
 
-  // Handle Google Sign-In
   const handleGoogleSignIn = async () => {
     try {
       const result: SignInResult = await signInWithGoogle();
-      if (result.error) {
-        setError(result.error.message);
-      } else {
-        console.log("Logged in user:", result.user);
-      }
+      if (result.error) setError(result.error.message);
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message); // Type-safe error handling
-      } else {
-        setError("An unknown error occurred.");
-      }
+      setError(err instanceof Error ? err.message : "An unknown error occurred.");
     }
   };
 
-  // Handle Sign-Out
   const handleSignOut = async () => {
     try {
       await signOutUser();
-      console.log("User signed out successfully.");
+      setShowDropdown(false);
     } catch (err) {
-      console.log(err);
       setError("Error signing out.");
     }
   };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropDownRef?.current &&
-        !dropDownRef?.current.contains(event?.target as Node)
-      ) {
+      if (dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
       }
     };
+    if (showDropdown) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showDropdown]);
 
-    if (showDropdown) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  });
-
-  // if (loading) {
-  //   return <div>Loading...</div>; // Show loading state while auth state is being determined
-  // }
+  if (loading) return <div className="w-8 h-8 rounded-full bg-[var(--bg-secondary)] animate-pulse" />;
 
   return (
-    <div>
-      {/* If user is not logged in, show "Log In" button */}
+    <div className="relative">
       {!user ? (
-        <button onClick={handleGoogleSignIn}>Log In with Google</button>
+        <button 
+          onClick={handleGoogleSignIn}
+          className="flex items-center gap-2 bg-[var(--text-primary)] text-[var(--bg-primary)] px-5 py-2 rounded-full font-medium text-sm hover:opacity-90 transition-all hover:scale-[1.02] active:scale-[0.98]"
+        >
+          <LogIn size={16} />
+          Sign In
+        </button>
       ) : (
-        // If user is logged in, show their profile information
-        <div className="flex ">
-          <h3></h3>
-          <button>
+        <div className="flex items-center">
+          <button 
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="w-10 h-10 rounded-full overflow-hidden border-2 border-transparent hover:border-[var(--accent-color)] transition-all transform active:scale-95"
+          >
             <img
               src={user?.photoURL || "/src/assets/user.png"}
               alt="User Profile"
-              style={{ width: "50px", borderRadius: "50%" }}
-              onClick={() => {
-                setShowDropdown(!showDropdown);
-              }}
+              className="w-full h-full object-cover"
             />
           </button>
-          {/* <p>Email: {user.email}</p> */}
-          {/* <button onClick={handleSignOut}>Logout</button> */}
 
-          <div
-            ref={dropDownRef}
-            className={`${
-              showDropdown ? "block" : "hidden"
-            } absolute bg-[#f9f9f9] border-2 min-w-[160px] shadow-md shadow-black px-[8px] py-[8px] z-10 right-8 top-16 `}
-          >
-            <ul className="text-black ">
-              <li className="hover:text-xl cursor-pointer">
-                <Link to={`/profile/${user.uid}`}>Profile</Link>
-              </li>
-              <li
-                className="hover:text-xl cursor-pointer"
-                onClick={handleSignOut}
+          <AnimatePresence>
+            {showDropdown && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                ref={dropDownRef}
+                className="absolute right-0 top-14 w-64 glass border border-[var(--border-color)] rounded-2xl shadow-2xl p-2 z-[60]"
               >
-                Log out
-              </li>
-            </ul>
-          </div>
+                <div className="px-4 py-3 border-b border-[var(--border-color)] mb-1">
+                  <p className="text-sm font-semibold truncate">{user.displayName}</p>
+                  <p className="text-xs text-[var(--text-secondary)] truncate">{user.email}</p>
+                </div>
+                
+                <div className="space-y-1">
+                  <Link 
+                    to={`/profile/${user.uid}`}
+                    className="flex items-center gap-3 px-3 py-2 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] rounded-xl transition-colors"
+                  >
+                    <User size={16}/>
+                    Profile
+                  </Link>
+                  <Link 
+                    to={`/profile/${user.uid}`}
+                    className="flex items-center gap-3 px-3 py-2 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] rounded-xl transition-colors"
+                  >
+                    <Layout size={16}/>
+                    My Studio
+                  </Link>
+                  <button 
+                    className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] rounded-xl transition-colors"
+                  >
+                    <Settings size={16}/>
+                    Settings
+                  </button>
+                </div>
+                
+                <div className="border-t border-[var(--border-color)] mt-1 pt-1">
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-500 hover:bg-red-50/10 rounded-xl transition-colors"
+                  >
+                    <LogOut size={16}/>
+                    Log out
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
 
-      {/* Show error message if there is an error */}
       {error && (
-        <div style={{ color: "red" }}>
-          <p>Error: {error}</p>
+        <div className="absolute right-0 top-full mt-2 bg-red-500 text-white text-[10px] px-2 py-1 rounded">
+          {error}
         </div>
       )}
     </div>

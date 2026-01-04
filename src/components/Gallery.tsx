@@ -1,38 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import { IPicture } from "../types";
-import ImageFrame from "./ImageFrame";
-import FileUploadModal from "./FileUploadModal";
+import ImageCard from "./ImageCard";
 
 interface IGallery {
   pictureList: IPicture[];
-  canEditFile?: boolean;
+  canEdit?: boolean;
+  onOpenDetail?: (picture: IPicture) => void;
 }
 
-const Gallery: React.FC<IGallery> = ({ pictureList, canEditFile = false }) => {
-  const [showModal, setShowModal] = useState<boolean>(false);
+const Gallery: React.FC<IGallery> = ({ pictureList, canEdit = false, onOpenDetail }) => {
   return (
-    <div className="grid grid-cols-5 gap-[4px] pt-4">
+    <div className="masonry-grid pt-4">
       {pictureList.map((pic: IPicture) => (
-        <ImageFrame picture={pic} key={pic.id} canDeleteFile={canEditFile} />
+        <ImageCard 
+          picture={pic} 
+          key={pic.id} 
+          canEdit={canEdit} 
+          onOpenDetail={onOpenDetail} 
+        />
       ))}
-      {canEditFile && (
-        <>
-          <div className="border-black border-[2px] flex justify-center items-center">
-            <p
-              className="text-3xl py-3 px-5 rounded-full border-black border-[2px] hover:cursor-pointer"
-              onClick={() => {
-                setShowModal(true);
-              }}
-            >
-              +
-            </p>
-          </div>
-          <FileUploadModal
-            isVisible={showModal}
-            closeModal={() => setShowModal(false)}
-          />
-        </>
-      )}
     </div>
   );
 };

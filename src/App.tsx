@@ -3,6 +3,8 @@ import "./App.css";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Layout from "./pages/Layout";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 // const db = getFirestore(firebaseApp);
 
 function App() {
@@ -12,6 +14,8 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
         </Route>
       </Routes>
     </div>
