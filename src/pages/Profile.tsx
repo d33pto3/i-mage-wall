@@ -17,6 +17,7 @@ import ImageCard from "../components/ImageCard";
 import ImageDetailModal from "../components/ImageDetailModal";
 import FileUploadModal from "../components/FileUploadModal";
 import { motion } from "framer-motion";
+import { Masonry } from "masonic";
 import {
   Plus,
   Compass,
@@ -332,23 +333,28 @@ function Profile() {
           {/* Asset Grid */}
           <div className="relative min-h-[60vh]">
             {filteredList.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 px-2">
-                {filteredList.map((pic) => (
-                  <ImageCard
-                    key={pic.id}
-                    picture={pic}
-                    canEdit={isOwnProfile}
-                    onOpenDetail={(p) => {
-                      setSelectedPicture(p);
-                      setIsDetailOpen(true);
-                    }}
-                    isSelected={selectedIds.includes(pic.id)}
-                    onSelect={toggleSelect}
-                    currentUserId={user?.uid}
-                    showSocialActions={false}
-                  />
-                ))}
-              </div>
+              <Masonry
+                items={filteredList}
+                columnGutter={24}
+                columnWidth={320}
+                overscanBy={2}
+                render={({ data }) => (
+                  <div className="pb-6">
+                    <ImageCard
+                      picture={data}
+                      canEdit={isOwnProfile}
+                      onOpenDetail={(p) => {
+                        setSelectedPicture(p);
+                        setIsDetailOpen(true);
+                      }}
+                      isSelected={selectedIds.includes(data.id)}
+                      onSelect={toggleSelect}
+                      currentUserId={user?.uid}
+                      showSocialActions={false}
+                    />
+                  </div>
+                )}
+              />
             ) : (
               <div className="flex flex-col items-center justify-center py-48 border-2 border-dashed border-[var(--border-color)] rounded-[3rem] bg-[var(--bg-secondary)]/30 mx-2">
                 <div className="w-20 h-20 rounded-full bg-[var(--bg-primary)] flex items-center justify-center shadow-inner mb-8 opacity-50">

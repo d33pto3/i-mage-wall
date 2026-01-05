@@ -82,12 +82,14 @@ const ImageCard: React.FC<ImageCardProps> = ({
 
   return (
     <motion.div
-      className={`group relative rounded-xl overflow-hidden cursor-zoom-in transition-all duration-700 bg-[var(--bg-secondary)] transform transition-transform duration-1000 hover:scale-95 ${
+      className={`group relative rounded-xl overflow-hidden cursor-zoom-in bg-[var(--bg-secondary)] ${
         isSelected ? "ring-4 ring-[var(--accent-color)] ring-offset-4" : ""
       }`}
       layout
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ scale: 0.96 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
       onClick={() => onOpenDetail?.(picture)}
     >
       {/* Selection UI */}
