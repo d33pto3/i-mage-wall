@@ -23,4 +23,6 @@ export interface IPicture {
   url: string;
   userId: string;
   isPublic: boolean;
+  category?: string;
+  type?: "storage" | "remote";
 }
