@@ -20,6 +20,7 @@ const FileUploadModal: React.FC<IModal> = ({ isVisible, closeModal }) => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [picTitle, setPicTitle] = useState<string>("");
+  const [category, setCategory] = useState<string>("Nature");
   const [uploading, setUploading] = useState<boolean>(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [imageCount, setImageCount] = useState<number>(0);
@@ -81,6 +82,7 @@ const FileUploadModal: React.FC<IModal> = ({ isVisible, closeModal }) => {
         url: downloadURL,
         userId: user.uid,
         title: picTitle,
+        category: category,
         uploadedAt: new Date().toJSON(),
         isPublic: true,
         type: "storage",
@@ -207,6 +209,29 @@ const FileUploadModal: React.FC<IModal> = ({ isVisible, closeModal }) => {
                       className="w-full bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-[1.2rem] px-5 py-4 text-sm font-bold focus:outline-none focus:border-[var(--accent-color)] transition-all"
                       placeholder="e.g. Architecture-001"
                     />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-secondary)] ml-1">
+                      Visual Sector
+                    </label>
+                    <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className="w-full bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-[1.2rem] px-5 py-4 text-sm font-bold focus:outline-none focus:border-[var(--accent-color)] transition-all appearance-none cursor-pointer"
+                    >
+                      {[
+                        "Abstract",
+                        "Nature",
+                        "Digital Art",
+                        "Photography",
+                        "Architecture",
+                      ].map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <button

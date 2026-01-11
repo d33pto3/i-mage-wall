@@ -84,7 +84,7 @@ function Profile() {
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map((doc) => ({
-        ...(doc.data() as any),
+        ...(doc.data() as IPicture),
         id: doc.id,
       })) as IPicture[];
       setPictureList(data);
@@ -95,10 +95,10 @@ function Profile() {
 
   // Professional Creator Stats
   const storageAssetsCount = pictureList.filter(
-    (pic) => (pic as any).type === "storage" || !(pic as any).type
+    (pic) => pic.type === "storage" || !pic.type
   ).length;
   const remoteAssetsCount = pictureList.filter(
-    (pic) => (pic as any).type === "remote"
+    (pic) => pic.type === "remote"
   ).length;
 
   const stats = [
@@ -297,6 +297,27 @@ function Profile() {
                   className="w-full bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl py-3.5 px-4 text-sm font-medium focus:outline-none focus:border-[var(--accent-color)] transition-all"
                 />
               </div>
+              <div className="flex-1 w-full md:w-48 space-y-1">
+                <label className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--text-secondary)] ml-1">
+                  Sector
+                </label>
+                <select
+                  id="remoteCategory"
+                  className="w-full bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl py-3.5 px-4 text-sm font-medium focus:outline-none focus:border-[var(--accent-color)] transition-all appearance-none cursor-pointer"
+                >
+                  {[
+                    "Abstract",
+                    "Nature",
+                    "Digital Art",
+                    "Photography",
+                    "Architecture",
+                  ].map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <button
                 onClick={async () => {
                   const urlInput = document.getElementById(
@@ -305,6 +326,9 @@ function Profile() {
                   const titleInput = document.getElementById(
                     "remoteTitle"
                   ) as HTMLInputElement;
+                  const categoryInput = document.getElementById(
+                    "remoteCategory"
+                  ) as HTMLSelectElement;
                   if (!urlInput.value || !user) return;
 
                   try {
@@ -312,6 +336,7 @@ function Profile() {
                       url: urlInput.value,
                       userId: user.uid,
                       title: titleInput.value || "Remote Asset",
+                      category: categoryInput.value,
                       uploadedAt: new Date().toJSON(),
                       isPublic: true,
                       type: "remote",
@@ -339,20 +364,18 @@ function Profile() {
                 columnWidth={320}
                 overscanBy={2}
                 render={({ data }) => (
-                  <div className="pb-6">
-                    <ImageCard
-                      picture={data}
-                      canEdit={isOwnProfile}
-                      onOpenDetail={(p) => {
-                        setSelectedPicture(p);
-                        setIsDetailOpen(true);
-                      }}
-                      isSelected={selectedIds.includes(data.id)}
-                      onSelect={toggleSelect}
-                      currentUserId={user?.uid}
-                      showSocialActions={false}
-                    />
-                  </div>
+                  <ImageCard
+                    picture={data}
+                    canEdit={isOwnProfile}
+                    onOpenDetail={(p) => {
+                      setSelectedPicture(p);
+                      setIsDetailOpen(true);
+                    }}
+                    isSelected={selectedIds.includes(data.id)}
+                    onSelect={toggleSelect}
+                    currentUserId={user?.uid}
+                    showSocialActions={false}
+                  />
                 )}
               />
             ) : (

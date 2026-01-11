@@ -9,9 +9,9 @@ import { useAuth } from "../context/useAuth";
 import { Masonry } from "masonic";
 
 function Home() {
+  const { user } = useAuth();
   const [pictureList, setPictureList] = useState<IPicture[]>([]);
   const [filteredList, setFilteredList] = useState<IPicture[]>([]);
-  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPicture, setSelectedPicture] = useState<IPicture | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -27,14 +27,12 @@ function Home() {
   ];
 
   const MasonryCard = ({ data }: { data: IPicture }) => (
-    <div className="pb-8">
-      <ImageCard
-        picture={data}
-        onOpenDetail={openDetail}
-        showSocialActions={true}
-        currentUserId={user?.uid}
-      />
-    </div>
+    <ImageCard
+      picture={data}
+      onOpenDetail={openDetail}
+      showSocialActions={true}
+      currentUserId={user?.uid}
+    />
   );
 
   useEffect(() => {
@@ -44,7 +42,7 @@ function Home() {
       q,
       (snapshot) => {
         const data = snapshot.docs.map((doc) => ({
-          ...(doc.data() as any),
+          ...(doc.data() as IPicture),
           id: doc.id,
         })) as IPicture[];
         setPictureList(data);
@@ -64,7 +62,7 @@ function Home() {
       setFilteredList(pictureList);
     } else {
       setFilteredList(
-        pictureList.filter((pic) => (pic as any).category === activeCategory)
+        pictureList.filter((pic) => pic.category === activeCategory)
       );
     }
   }, [pictureList, activeCategory]);
@@ -128,8 +126,8 @@ function Home() {
         ) : filteredList.length > 0 ? (
           <Masonry
             items={filteredList}
-            columnGutter={32}
-            columnWidth={300}
+            columnGutter={24}
+            columnWidth={320}
             overscanBy={2}
             render={MasonryCard}
           />
