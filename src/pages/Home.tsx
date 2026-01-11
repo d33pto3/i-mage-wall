@@ -4,17 +4,13 @@ import { db } from "../firebase/config";
 import { IPicture } from "../types";
 import ImageCard from "../components/ImageCard";
 import ImageDetailModal from "../components/ImageDetailModal";
-import { SlidersHorizontal, Database } from "lucide-react";
-import { seedDatabase } from "../utils/seedData";
-import { useAuth } from "../context/useAuth";
+import { SlidersHorizontal } from "lucide-react";
 import { Masonry } from "masonic";
 
 function Home() {
   const [pictureList, setPictureList] = useState<IPicture[]>([]);
   const [filteredList, setFilteredList] = useState<IPicture[]>([]);
-  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [isSeeding, setIsSeeding] = useState(false);
   const [selectedPicture, setSelectedPicture] = useState<IPicture | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
@@ -82,22 +78,8 @@ function Home() {
           </h1>
         </div>
         
-        <div className="flex flex-col md:flex-row items-center gap-4">
-          <button 
-            onClick={async () => {
-              setIsSeeding(true);
-              await seedDatabase(user?.uid);
-              setIsSeeding(false);
-              alert("8 fake assets have been injected into your profile and the global architecture.");
-            }}
-            disabled={isSeeding}
-            className="flex items-center gap-2 px-6 py-3 bg-indigo-500/10 text-indigo-500 rounded-[1.2rem] text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-500/20 transition-all border border-indigo-500/20 disabled:opacity-50"
-          >
-            <Database size={14} className={isSeeding ? "animate-pulse" : ""} />
-            {isSeeding ? "Injecting Data..." : "Seed Feed"}
-          </button>
-
-          <div className="flex bg-[var(--bg-secondary)] p-1.5 rounded-[1.5rem] border border-[var(--border-color)] overflow-x-auto max-w-full scrollbar-none">
+        <div className="flex flex-col md:flex-row items-center gap-4 max-w-full overflow-hidden">
+          <div className="flex bg-[var(--bg-secondary)] p-1.5 rounded-[1.5rem] border border-[var(--border-color)] overflow-x-auto max-w-full scrollbar-none min-w-0">
             {categories.map((cat) => (
               <button
                 key={cat}
@@ -109,7 +91,7 @@ function Home() {
             ))}
           </div>
           
-          <button className="hidden md:flex p-4 bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-[1.5rem] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-primary)] hover:shadow-lg transition-all">
+          <button className="hidden md:flex flex-shrink-0 p-4 bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-[1.5rem] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-primary)] hover:shadow-lg transition-all">
             <SlidersHorizontal size={20} />
           </button>
         </div>
